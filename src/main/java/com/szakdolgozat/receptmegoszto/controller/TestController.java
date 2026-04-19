@@ -20,6 +20,6 @@ public class TestController {
 
         userRepository.save(ujFelhasznalo);
 
-        return "Sikeres mentés! Nyisd meg a DBeaver-t, és nézd meg a users táblát!";
+        return "Sikeres mentés!";
     }
 }
