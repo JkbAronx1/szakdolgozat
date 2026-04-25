@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Új recept beküldése - Receptmegosztó</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .form-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); width: 100%; max-width: 500px; }
+        .form-container h2 { text-align: center; color: #e67e22; margin-bottom: 25px; font-size: 28px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: #555; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .input-group input, .input-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; transition: border-color 0.3s; font-family: 'Poppins', sans-serif; }
+        .input-group input:focus, .input-group textarea:focus { border-color: #f39c12; outline: none; }
+        .input-group textarea { height: 150px; resize: vertical; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Poppins', sans-serif; margin-top: 10px; box-shadow: 0 4px 0 #e3896b; transition: all 0.1s ease; }
+        button:active { transform: translateY(4px); box-shadow: 0 0px 0 #e3896b; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Új Recept</h2>
+
+    <form action="/api/uj-recept" method="POST">
+        <div class="input-group">
+            <label>Recept neve</label>
+            <input type="text" name="title" required>
+        </div>
+        <div class="input-group">
+            <label>Szakács neve</label>
+            <input type="text" name="author" required>
+        </div>
+        <div class="input-group">
+            <label>Elkészítés leírása</label>
+            <textarea name="description" required></textarea>
+        </div>
+        <button type="submit">Recept Mentése</button>
+    </form>
+</div>
+
+</body>
+</html>
