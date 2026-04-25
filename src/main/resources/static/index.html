@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receptmegosztó - Főoldal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    header h1 {
+      color: #e67e22;
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 30px;
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 4px 0 #e3896b;
+      transition: all 0.1s ease;
+      margin-top: 20px;
+    }
+
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 0px 0 #e3896b;
+    }
+
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .recipe-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .recipe-card h3 {
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .recipe-author {
+      color: #e67e22;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .recipe-desc {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Receptmegosztó</h1>
+    <p style="color: #666;">Fedezd fel a közösség legjobb receptjeit!</p>
+    <a href="uj-recept.html" class="btn">Új recept hozzáadása</a>
+  </header>
+
+  <div class="recipes-grid" id="recept-lista">
+  </div>
+</div>
+
+<script>
+  fetch('/api/receptek')
+          .then(response => response.json())
+          .then(receptek => {
+            const lista = document.getElementById('recept-lista');
+
+            if(receptek.length === 0) {
+              lista.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color: #888; padding: 50px;">Még nincs feltöltve recept. Legyél te az első!</p>';
+              return;
+            }
+
+            receptek.forEach(recept => {
+              lista.innerHTML += `
+                        <div class="recipe-card">
+                            <h3>${recept.title}</h3>
+                            <span class="recipe-author">${recept.author}</span>
+                            <div class="recipe-desc">${recept.description}</div>
+                        </div>
+                    `;
+            });
+          })
+          .catch(error => console.error('Hiba a receptek betöltésekor:', error));
+</script>
+</body>
+</html>
