@@ -3,12 +3,14 @@ package com.szakdolgozat.receptmegoszto.controller;
 import com.szakdolgozat.receptmegoszto.entity.User;
 import com.szakdolgozat.receptmegoszto.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:4200") 
 @RestController
 public class UserController {
 
@@ -31,18 +33,20 @@ public class UserController {
     }
 
     @PostMapping("/api/login")
-    public String login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginAdatok) {
+        String email = loginAdatok.get("email");
+        String password = loginAdatok.get("jelszo");
 
         Optional<User> felhasznalo = userRepository.findByEmail(email);
 
         if (felhasznalo.isPresent()) {
             if (felhasznalo.get().getPassword().equals(password)) {
-                return "Sikeres bejelentkezés!";
+                return ResponseEntity.ok(felhasznalo.get());
             } else {
-                return "Hibás jelszó!";
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Hibás jelszó!");
             }
         } else {
-            return "Hiba: Ezzel az email címmel még senki sem regisztrált!";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hiba: Ezzel az email címmel még senki sem regisztrált!");
         }
     }
 }
