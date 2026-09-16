@@ -22,6 +22,7 @@ public class Recept {
     private String nehezseg;
     private String kategoria;
     private String kepUrl; // A Java automatikusan összeköti a DB-ben lévő kep_url oszloppal
+    private String hozzavalok;
 
     public Recept() {
     }
@@ -51,4 +52,12 @@ public class Recept {
 
     public String getKepUrl() { return kepUrl; }
     public void setKepUrl(String kepUrl) { this.kepUrl = kepUrl; }
+
+    public String getHozzavalok() {
+        return hozzavalok;
+    }
+
+    public void setHozzavalok(String hozzavalok) {
+        this.hozzavalok = hozzavalok;
+    }
 }

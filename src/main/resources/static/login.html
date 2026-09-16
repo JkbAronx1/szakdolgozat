@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bejelentkezés - Receptmegosztó</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); display: flex; justify-content: center; align-items: center; height: 100vh; }
@@ -14,8 +16,23 @@
         .input-group label { display: block; color: #555; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
         .input-group input { width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; transition: border-color 0.3s; font-family: 'Poppins', sans-serif; }
         .input-group input:focus { border-color: #f39c12; outline: none; }
+
         button { width: 100%; padding: 14px; background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; font-family: 'Poppins', sans-serif; margin-top: 10px; box-shadow: 0 4px 0 #e3896b; transition: all 0.1s ease; }
         button:active { transform: translateY(4px); box-shadow: 0 0px 0 #e3896b; }
+
+        .toggle-btn {
+            width: 50px;
+            margin-top: 0;
+            padding: 0;
+            background: #e67e22;
+            box-shadow: 0 4px 0 #c0392b;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .toggle-btn:active { box-shadow: 0 0px 0 #c0392b; }
+
         .link { text-align: center; margin-top: 20px; font-size: 14px; }
         .link a { color: #e67e22; text-decoration: none; font-weight: 600; }
     </style>
@@ -32,7 +49,12 @@
         </div>
         <div class="input-group">
             <label>Jelszó</label>
-            <input type="password" name="password" placeholder="jelszó" required>
+            <div style="display: flex; gap: 8px;">
+                <input type="password" id="jelszo" name="password" placeholder="jelszó" required style="flex: 1;">
+                <button type="button" class="toggle-btn" onclick="toggleJelszo(this)">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
         </div>
         <button type="submit">Belépés</button>
     </form>
@@ -41,6 +63,23 @@
         Még nincs fiókod? <a href="regisztracio.html">Regisztrálj itt!</a>
     </div>
 </div>
+
+<script>
+    function toggleJelszo(gomb) {
+        var jelszoMezo = document.getElementById("jelszo");
+        var ikon = gomb.querySelector("i");
+
+        if (jelszoMezo.type === "password") {
+            jelszoMezo.type = "text";
+            ikon.classList.remove("fa-eye");
+            ikon.classList.add("fa-eye-slash");
+        } else {
+            jelszoMezo.type = "password";
+            ikon.classList.remove("fa-eye-slash");
+            ikon.classList.add("fa-eye");
+        }
+    }
+</script>
 
 </body>
 </html>

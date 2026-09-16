@@ -5,6 +5,7 @@ import com.szakdolgozat.receptmegoszto.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -17,6 +18,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/api/uj-felhasznalo")
     public String ujFelhasznaloMentes(@RequestParam String username,
                                       @RequestParam String email,
@@ -25,7 +29,9 @@ public class UserController {
         User ujFelhasznalo = new User();
         ujFelhasznalo.setUsername(username);
         ujFelhasznalo.setEmail(email);
-        ujFelhasznalo.setPassword(password);
+
+        //Itt titkosítjuk a jelszót mentés előtt)
+        ujFelhasznalo.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(ujFelhasznalo);
 
@@ -40,7 +46,9 @@ public class UserController {
         Optional<User> felhasznalo = userRepository.findByEmail(email);
 
         if (felhasznalo.isPresent()) {
-            if (felhasznalo.get().getPassword().equals(password)) {
+            // Itt használjuk a matches() függvényt az összehasonlításhoz
+            // Az első paraméter a sima beírt jelszó, a második a titkosított jelszó az adatbázisból
+            if (passwordEncoder.matches(password, felhasznalo.get().getPassword())) {
                 return ResponseEntity.ok(felhasznalo.get());
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Hibás jelszó!");

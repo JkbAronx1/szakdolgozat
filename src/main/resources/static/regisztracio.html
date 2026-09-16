@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regisztráció - Receptmegosztó</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         * {
             box-sizing: border-box;
@@ -84,6 +86,24 @@
             transform: translateY(4px);
             box-shadow: 0 0px 0 #e3896b;
         }
+
+        .toggle-btn {
+            width: 50px;
+            margin-top: 0;
+            padding: 0;
+            background: #e67e22;
+            box-shadow: 0 4px 0 #c0392b;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .toggle-btn:active {
+            box-shadow: 0 0px 0 #c0392b;
+        }
+
+        .link { text-align: center; margin-top: 20px; font-size: 14px; }
+        .link a { color: #e67e22; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -105,13 +125,39 @@
 
         <div class="input-group">
             <label>Jelszó</label>
-            <input type="password" name="password" placeholder="jelszó" required>
+            <div style="display: flex; gap: 8px;">
+                <input type="password" id="jelszo" name="password" placeholder="jelszó" required style="flex: 1;">
+                <button type="button" class="toggle-btn" onclick="toggleJelszo(this)">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
         </div>
 
         <button type="submit">Regisztrálok</button>
 
     </form>
+
+    <div class="link">
+        Már van fiókod? <a href="login.html">Lépj be itt!</a>
+    </div>
 </div>
+
+<script>
+    function toggleJelszo(gomb) {
+        var jelszoMezo = document.getElementById("jelszo");
+        var ikon = gomb.querySelector("i");
+
+        if (jelszoMezo.type === "password") {
+            jelszoMezo.type = "text";
+            ikon.classList.remove("fa-eye");
+            ikon.classList.add("fa-eye-slash");
+        } else {
+            jelszoMezo.type = "password";
+            ikon.classList.remove("fa-eye-slash");
+            ikon.classList.add("fa-eye");
+        }
+    }
+</script>
 
 </body>
 </html>
