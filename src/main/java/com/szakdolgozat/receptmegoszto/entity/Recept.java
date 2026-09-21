@@ -21,7 +21,10 @@ public class Recept {
     private int ido;
     private String nehezseg;
     private String kategoria;
-    private String kepUrl; // A Java automatikusan összeköti a DB-ben lévő kep_url oszloppal
+    @Lob
+    @Column(name = "kep_url", columnDefinition = "LONGTEXT")
+    private String kepUrl;
+    @Column(columnDefinition = "TEXT")
     private String hozzavalok;
 
     public Recept() {
@@ -59,5 +62,15 @@ public class Recept {
 
     public void setHozzavalok(String hozzavalok) {
         this.hozzavalok = hozzavalok;
+    }
+
+    private Integer adag = 4;
+
+    public Integer getAdag() {
+        return adag;
+    }
+
+    public void setAdag(Integer adag) {
+        this.adag = adag;
     }
 }
