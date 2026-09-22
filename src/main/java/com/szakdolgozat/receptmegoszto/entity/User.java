@@ -21,6 +21,9 @@ public class User {
     @Column(name = "recipe_count", columnDefinition = "integer default 0")
     private int recipeCount;
 
+    @Column(nullable = false, length = 20)
+    private String role = "USER";
+
     public User() {
     }
 
@@ -38,4 +41,7 @@ public class User {
 
     public int getRecipeCount() { return recipeCount; }
     public void setRecipeCount(int recipeCount) { this.recipeCount = recipeCount; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
