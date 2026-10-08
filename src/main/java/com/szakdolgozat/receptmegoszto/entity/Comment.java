@@ -17,6 +17,8 @@ public class Comment {
 
     private String author;
 
+    private int ertekeles;
+
     public Comment() {}
 
     // Getterek és setterek
@@ -31,4 +33,7 @@ public class Comment {
 
     public String getAuthor() { return author; }
     public void setAuthor(String author) { this.author = author; }
+
+    public int getErtekeles() { return ertekeles; } // <-- EZ IS
+    public void setErtekeles(int ertekeles) { this.ertekeles = ertekeles; }
 }
