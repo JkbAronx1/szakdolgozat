@@ -17,7 +17,6 @@ public class Recept {
 
     private String author;
 
-    // --- ÚJ MEZŐK ---
     private int ido;
     private String nehezseg;
     private String kategoria;

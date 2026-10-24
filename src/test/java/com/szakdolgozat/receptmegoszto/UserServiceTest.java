@@ -9,7 +9,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -28,32 +32,77 @@ class UserServiceTest {
 
     @Test
     void tesztSikeresRegisztracio_EsJelszoTitkositas() {
-        // 1. Előkészítés (Arrange)
+
         String nyersJelszo = "titkos123";
         String titkositottHash = "$2a$10$ValamiTitkositottBcryptHash";
 
-        // Megmondjuk a tesztkörnyezetnek, hogy mit csináljon a jelszóval
         when(passwordEncoder.encode(nyersJelszo)).thenReturn(titkositottHash);
 
-        // 2. Futtatás (Act)
-        // Meghívjuk a TE saját metódusodat a különálló paraméterekkel
-        String valasz = userController.ujFelhasznaloMentes("SzakdogaTeszt", "teszt@gmail.com", nyersJelszo);
+        when(userRepository.existsByEmail("teszt@gmail.com")).thenReturn(false);
+        when(userRepository.existsByUsername("SzakdogaTeszt")).thenReturn(false);
 
-        // 3. Ellenőrzés (Assert)
-        // a) Ellenőrizzük, hogy a Controller jó üzenetet adott-e vissza
-        assertEquals("Sikeres regisztráció!", valasz);
+        ResponseEntity<String> valasz = userController.ujFelhasznaloMentes("SzakdogaTeszt", "teszt@gmail.com", nyersJelszo);
 
-        // b) Elkapjuk azt a User objektumot, amit a Controller létrehozott és menteni próbált
+        assertEquals(HttpStatus.OK, valasz.getStatusCode());
+        assertEquals("Sikeres regisztráció!", valasz.getBody());
+
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository, times(1)).save(userCaptor.capture());
 
         User mentettUser = userCaptor.getValue();
 
-        // c) A legfontosabb: ellenőrizzük, hogy a jelszó tényleg titkosítva van-e a mentett objektumban
         assertEquals(titkositottHash, mentettUser.getPassword());
 
-        // Ráadásként ellenőrizzük a többi adatot is
         assertEquals("SzakdogaTeszt", mentettUser.getUsername());
         assertEquals("teszt@gmail.com", mentettUser.getEmail());
+    }
+
+    @Test
+    void tesztRegisztracio_FoglaltEmail() {
+        when(userRepository.existsByEmail("teszt@gmail.com")).thenReturn(true);
+
+        ResponseEntity<String> valasz = userController.ujFelhasznaloMentes("UjUser", "teszt@gmail.com", "jelszo123");
+
+        assertEquals(HttpStatus.BAD_REQUEST, valasz.getStatusCode());
+        assertEquals("Hiba: Ez az e-mail cím már foglalt!", valasz.getBody());
+    }
+
+    @Test
+    void tesztLogin_Sikeres() {
+        User mockUser = new User();
+        mockUser.setUsername("SzakdogaTeszt");
+        mockUser.setPassword("titkositottHash");
+
+        when(userRepository.findByEmail("teszt@gmail.com")).thenReturn(Optional.of(mockUser));
+        when(passwordEncoder.matches("titkos123", "titkositottHash")).thenReturn(true);
+
+        Map<String, String> loginAdatok = Map.of(
+                "email", "teszt@gmail.com",
+                "jelszo", "titkos123"
+        );
+
+        ResponseEntity<?> valasz = userController.login(loginAdatok);
+
+        assertEquals(HttpStatus.OK, valasz.getStatusCode());
+        assertEquals(mockUser, valasz.getBody());
+    }
+
+    @Test
+    void tesztLogin_HibasJelszo() {
+        User mockUser = new User();
+        mockUser.setPassword("titkositottHash");
+
+        when(userRepository.findByEmail("teszt@gmail.com")).thenReturn(Optional.of(mockUser));
+        when(passwordEncoder.matches("rosszJelszo", "titkositottHash")).thenReturn(false);
+
+        Map<String, String> loginAdatok = Map.of(
+                "email", "teszt@gmail.com",
+                "jelszo", "rosszJelszo"
+        );
+
+        ResponseEntity<?> valasz = userController.login(loginAdatok);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, valasz.getStatusCode());
+        assertEquals("Hibás jelszó!", valasz.getBody());
     }
 }

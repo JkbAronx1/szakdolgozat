@@ -22,20 +22,27 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/api/uj-felhasznalo")
-    public String ujFelhasznaloMentes(@RequestParam String username,
-                                      @RequestParam String email,
-                                      @RequestParam String password) {
+    public ResponseEntity<String> ujFelhasznaloMentes(@RequestParam String username,
+                                                      @RequestParam String email,
+                                                      @RequestParam String password) {
+
+        if (userRepository.existsByEmail(email)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hiba: Ez az e-mail cím már foglalt!");
+        }
+
+        if (userRepository.existsByUsername(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hiba: Ez a felhasználónév már foglalt!");
+        }
 
         User ujFelhasznalo = new User();
         ujFelhasznalo.setUsername(username);
         ujFelhasznalo.setEmail(email);
 
-        //Itt titkosítjuk a jelszót mentés előtt)
         ujFelhasznalo.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(ujFelhasznalo);
 
-        return "Sikeres regisztráció!";
+        return ResponseEntity.ok("Sikeres regisztráció!");
     }
 
     @PostMapping("/api/login")
